@@ -11,6 +11,6 @@ interface APIService {
         @Query("type") type: String,
         @Query("apikey") apiKey: String,
         @Query("page") page: Int,
-        @Query("s") search: String
+        @Query("s") search: String? = null // Make search query nullable
     ): Call<SearchResult>
 }

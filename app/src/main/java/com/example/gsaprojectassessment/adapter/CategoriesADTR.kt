@@ -9,10 +9,8 @@ import com.squareup.picasso.Picasso
 
 class CategoriesADTR(var movie: ArrayList<Movie>) : RecyclerView.Adapter<CategoriesADTR.CategoriesVH>() {
 
-
     class CategoriesVH(mBinding: CategoryListItemBinding) : RecyclerView.ViewHolder(mBinding.root) {
         val binding: CategoryListItemBinding = mBinding
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoriesVH {
@@ -30,8 +28,7 @@ class CategoriesADTR(var movie: ArrayList<Movie>) : RecyclerView.Adapter<Categor
     }
 
     override fun onBindViewHolder(holder: CategoriesVH, position: Int) {
-        val categoriesList = ArrayList(movie.filter { it.movieHomeListType == Movie.MovieHomeListType.CATEGORIES.name })
-        val movieCategory = categoriesList[position]
+        val movieCategory = movie[position]
         holder.binding.titleTV.text = movieCategory.title
         holder.binding.yearTV.text = movieCategory.year
         if (movieCategory.poster.isNotEmpty()) {

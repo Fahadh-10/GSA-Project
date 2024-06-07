@@ -13,7 +13,6 @@ class CategoriesViewHolder(private val binding: CategoryListBinding) : RecyclerV
 
     private lateinit var mAdapter : CategoriesADTR
 
-
     companion object {
         fun getViewHolder(parent: ViewGroup) : CategoriesViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
@@ -22,9 +21,9 @@ class CategoriesViewHolder(private val binding: CategoryListBinding) : RecyclerV
         }
     }
 
-    fun configureCell(movie: ArrayList<Movie>, context: Context) {
+    fun configureCell(movie: ArrayList<Movie>?, context: Context) {
         binding.categoriesRV.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL , false)
-        mAdapter = CategoriesADTR(movie)
+        mAdapter = CategoriesADTR(movie ?: ArrayList())
         binding.categoriesRV.adapter = mAdapter
     }
 }

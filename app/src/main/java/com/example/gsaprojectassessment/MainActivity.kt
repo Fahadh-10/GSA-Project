@@ -8,12 +8,15 @@ import com.example.gsaprojectassessment.Dao.MovieDao
 import com.example.gsaprojectassessment.adapter.MovieListADTR
 import com.example.gsaprojectassessment.databinding.ActivityMainBinding
 import com.example.gsaprojectassessment.helper.RoomDBHelper
+import com.example.gsaprojectassessment.model.HomeMovieList
 import com.example.gsaprojectassessment.model.Movie
 import com.example.gsaprojectassessment.model.SearchResult
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -25,7 +28,7 @@ class MainActivity : AppCompatActivity() {
     var movies = ArrayList<Movie>()
     private lateinit var apiService: APIService
     private lateinit var roomDBHelper : RoomDBHelper
-    private lateinit var movieDao :MovieDao
+    private lateinit var movieDao : MovieDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,10 +47,9 @@ class MainActivity : AppCompatActivity() {
     private fun setAdapter() {
         binding.recyclerView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        movieListADTR = MovieListADTR(movies)
+        movieListADTR = MovieListADTR(ArrayList())
         binding.recyclerView.adapter = movieListADTR
     }
-
 
 
     private fun getMovies() {
@@ -60,27 +62,35 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call<SearchResult>, response: Response<SearchResult>) {
                 if (response.isSuccessful) {
                     val fetchedMovies = response.body()?.search ?: ArrayList()
-                    val updatedMovies = ArrayList<Movie>()
+                    val categoryList = ArrayList<Movie>()
+                    val featureList = ArrayList<Movie>()
+                    val homeMovieList = ArrayList<HomeMovieList>()
 
                     fetchedMovies.forEach { movie ->
-                        val featuredMovie = movie.copy(movieHomeListType = Movie.MovieHomeListType.FEATURED.name)
-                        updatedMovies.add(featuredMovie)
+                        categoryList.add(movie)
                     }
+                    homeMovieList.add(HomeMovieList(categoryList , HomeMovieList.MovieHomeListType.CATEGORIES.name))
 
                     fetchedMovies.forEach { movie ->
-                        val categoriesMovie = movie.copy(movieHomeListType = Movie.MovieHomeListType.CATEGORIES.name)
-                        updatedMovies.add(categoriesMovie)
+                        featureList.add(movie)
                     }
+                    homeMovieList.add(HomeMovieList(featureList , HomeMovieList.MovieHomeListType.FEATURED.name))
 
-                    CoroutineScope(Dispatchers.IO).launch {
-                        movieDao.insert(updatedMovies)
-                    }
-                    CoroutineScope(Dispatchers.Main).launch {
-                        val staffListDeferred = async(Dispatchers.IO) {
-                            movieDao.getAllStaff()
-                        }
-                    }
-                    movieListADTR.movie = updatedMovies
+//                    CoroutineScope(Dispatchers.IO).launch {
+//                        movieDao.insert(fetchedMovies)
+//
+//                        // Once data is inserted, fetch it from the database
+//                        val staffList = movieDao.getAllStaff()
+//
+//                        // Update UI on the main thread
+//                        withContext(Dispatchers.Main) {
+//                            // Update your UI with the fetched data here
+//                            // For example, you can update your adapter with the fetched data
+////                            movieListADTR.movie = staffList
+////                            movieListADTR.notifyDataSetChanged()
+//                        }
+//                    }
+                    movieListADTR.movie = homeMovieList
                     movieListADTR.notifyDataSetChanged()
                 } else {
                     Log.e("MainActivity", "Response not successful: ${response.code()}")

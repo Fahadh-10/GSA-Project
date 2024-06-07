@@ -21,9 +21,9 @@ class FeaturedViewHolder(private val binding: FeaturedListBinding) : RecyclerVie
         }
     }
 
-    fun configureCell(movie: ArrayList<Movie>, context: Context) {
+    fun configureCell(movie: ArrayList<Movie>?, context: Context) {
         binding.categoriesRV.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL , false)
-        mAdapter = FeaturesADTR(movie)
+        mAdapter = FeaturesADTR(movie ?: ArrayList())
         binding.categoriesRV.adapter = mAdapter
         }
     }

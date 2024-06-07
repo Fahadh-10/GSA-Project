@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.example.gsaprojectassessment.model.HomeMovieList
 import com.example.gsaprojectassessment.model.Movie
 
 @Dao
